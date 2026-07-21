@@ -1,24 +1,155 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { Search, MapPin, Loader2 } from "lucide-react";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
+import { VagaCard } from "@/components/vaga-card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PROVINCIAS } from "@/lib/constants";
+import { listVagas } from "@/lib/vagas";
+
+const PAGE_SIZE = 9;
+
 export const Route = createFileRoute("/")({
-  component: Index,
+  component: HomePage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function HomePage() {
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [provincia, setProvincia] = useState<string>("todas");
+
+  const query = useInfiniteQuery({
+    queryKey: ["vagas", { search, provincia }],
+    initialPageParam: 0,
+    queryFn: ({ pageParam }) =>
+      listVagas({ search, provincia, offset: pageParam as number, limit: PAGE_SIZE }),
+    getNextPageParam: (last, all) => {
+      const loaded = all.reduce((acc, p) => acc + p.rows.length, 0);
+      return loaded < last.count ? loaded : undefined;
+    },
+  });
+
+  const vagas = useMemo(() => query.data?.pages.flatMap((p) => p.rows) ?? [], [query.data]);
+  const total = query.data?.pages[0]?.count ?? 0;
+
+  function onSearch(e: React.FormEvent) {
+    e.preventDefault();
+    setSearch(searchInput);
+  }
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="flex min-h-screen flex-col">
+      <SiteHeader />
+
+      <section className="relative overflow-hidden border-b border-border/60 bg-gradient-to-br from-primary via-primary to-primary/80 text-primary-foreground">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
+        <div className="relative mx-auto max-w-6xl px-4 py-16 md:py-24">
+          <p className="text-sm font-medium uppercase tracking-widest text-primary-foreground/70">
+            Portal de emprego
+          </p>
+          <h1 className="mt-3 max-w-3xl font-display text-4xl font-bold leading-tight md:text-5xl">
+            Encontre a sua próxima oportunidade em Moçambique
+          </h1>
+          <p className="mt-4 max-w-2xl text-base text-primary-foreground/80 md:text-lg">
+            Vagas atualizadas todos os dias, com todos os detalhes que precisa para se candidatar.
+          </p>
+
+          <form
+            onSubmit={onSearch}
+            className="mt-8 grid gap-3 rounded-2xl bg-background/95 p-3 shadow-lg backdrop-blur md:grid-cols-[1fr_220px_auto]"
+          >
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Cargo ou empresa"
+                className="h-11 pl-9 text-foreground"
+              />
+            </div>
+            <Select value={provincia} onValueChange={setProvincia}>
+              <SelectTrigger className="!h-11 text-foreground">
+                <MapPin className="mr-1 h-4 w-4 text-muted-foreground" />
+                <SelectValue placeholder="Província" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todas">Todas as províncias</SelectItem>
+                {PROVINCIAS.map((p) => (
+                  <SelectItem key={p} value={p}>
+                    {p}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button type="submit" size="lg" className="h-11">
+              Procurar
+            </Button>
+          </form>
+        </div>
+      </section>
+
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
+        <div className="mb-6 flex items-end justify-between">
+          <div>
+            <h2 className="font-display text-2xl font-bold">Vagas disponíveis</h2>
+            <p className="text-sm text-muted-foreground">
+              {query.isLoading
+                ? "A carregar..."
+                : total === 0
+                  ? "Sem resultados para os filtros escolhidos."
+                  : `${total} vaga${total === 1 ? "" : "s"} encontrada${total === 1 ? "" : "s"}`}
+            </p>
+          </div>
+        </div>
+
+        {query.isLoading ? (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-72 animate-pulse rounded-xl border border-border bg-muted/50" />
+            ))}
+          </div>
+        ) : vagas.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-border p-12 text-center">
+            <p className="text-lg font-medium">Nenhuma vaga encontrada</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Experimente ajustar a pesquisa ou o filtro de província.
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {vagas.map((v) => (
+              <VagaCard key={v.id} vaga={v} />
+            ))}
+          </div>
+        )}
+
+        {query.hasNextPage && (
+          <div className="mt-10 flex justify-center">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => query.fetchNextPage()}
+              disabled={query.isFetchingNextPage}
+            >
+              {query.isFetchingNextPage && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Carregar mais
+            </Button>
+          </div>
+        )}
+      </main>
+
+      <SiteFooter />
     </div>
   );
 }
