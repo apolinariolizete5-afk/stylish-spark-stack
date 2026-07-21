@@ -9,38 +9,177 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
+import { Route as EnviarVagaRouteImport } from './routes/enviar-vaga'
+import { Route as DmcaRouteImport } from './routes/dmca'
+import { Route as ContactoRouteImport } from './routes/contacto'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as VagasIdRouteImport } from './routes/vagas.$id'
+import { Route as AdminNovaRouteImport } from './routes/admin.nova'
 
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnviarVagaRoute = EnviarVagaRouteImport.update({
+  id: '/enviar-vaga',
+  path: '/enviar-vaga',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DmcaRoute = DmcaRouteImport.update({
+  id: '/dmca',
+  path: '/dmca',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactoRoute = ContactoRouteImport.update({
+  id: '/contacto',
+  path: '/contacto',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const VagasIdRoute = VagasIdRouteImport.update({
+  id: '/vagas/$id',
+  path: '/vagas/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminNovaRoute = AdminNovaRouteImport.update({
+  id: '/nova',
+  path: '/nova',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/contacto': typeof ContactoRoute
+  '/dmca': typeof DmcaRoute
+  '/enviar-vaga': typeof EnviarVagaRoute
+  '/privacidade': typeof PrivacidadeRoute
+  '/admin/nova': typeof AdminNovaRoute
+  '/vagas/$id': typeof VagasIdRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contacto': typeof ContactoRoute
+  '/dmca': typeof DmcaRoute
+  '/enviar-vaga': typeof EnviarVagaRoute
+  '/privacidade': typeof PrivacidadeRoute
+  '/admin/nova': typeof AdminNovaRoute
+  '/vagas/$id': typeof VagasIdRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/contacto': typeof ContactoRoute
+  '/dmca': typeof DmcaRoute
+  '/enviar-vaga': typeof EnviarVagaRoute
+  '/privacidade': typeof PrivacidadeRoute
+  '/admin/nova': typeof AdminNovaRoute
+  '/vagas/$id': typeof VagasIdRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/contacto'
+    | '/dmca'
+    | '/enviar-vaga'
+    | '/privacidade'
+    | '/admin/nova'
+    | '/vagas/$id'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/contacto'
+    | '/dmca'
+    | '/enviar-vaga'
+    | '/privacidade'
+    | '/admin/nova'
+    | '/vagas/$id'
+    | '/admin'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/contacto'
+    | '/dmca'
+    | '/enviar-vaga'
+    | '/privacidade'
+    | '/admin/nova'
+    | '/vagas/$id'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  ContactoRoute: typeof ContactoRoute
+  DmcaRoute: typeof DmcaRoute
+  EnviarVagaRoute: typeof EnviarVagaRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
+  VagasIdRoute: typeof VagasIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/enviar-vaga': {
+      id: '/enviar-vaga'
+      path: '/enviar-vaga'
+      fullPath: '/enviar-vaga'
+      preLoaderRoute: typeof EnviarVagaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dmca': {
+      id: '/dmca'
+      path: '/dmca'
+      fullPath: '/dmca'
+      preLoaderRoute: typeof DmcaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contacto': {
+      id: '/contacto'
+      path: '/contacto'
+      fullPath: '/contacto'
+      preLoaderRoute: typeof ContactoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +187,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/vagas/$id': {
+      id: '/vagas/$id'
+      path: '/vagas/$id'
+      fullPath: '/vagas/$id'
+      preLoaderRoute: typeof VagasIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/nova': {
+      id: '/admin/nova'
+      path: '/nova'
+      fullPath: '/admin/nova'
+      preLoaderRoute: typeof AdminNovaRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminNovaRoute: typeof AdminNovaRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminNovaRoute: AdminNovaRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
+  ContactoRoute: ContactoRoute,
+  DmcaRoute: DmcaRoute,
+  EnviarVagaRoute: EnviarVagaRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
+  VagasIdRoute: VagasIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
