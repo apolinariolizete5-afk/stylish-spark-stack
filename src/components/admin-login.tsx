@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Briefcase, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "@tanstack/react-router";
@@ -11,7 +11,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { CONTACTOS } from "@/lib/constants";
 
 export function AdminLogin({ authenticatedNotAdmin }: { authenticatedNotAdmin: boolean }) {
-  const [tab, setTab] = useState(authenticatedNotAdmin ? "login" : "login");
+  const [tab, setTab] = useState("login");
+  const [hasAdmin, setHasAdmin] = useState<boolean | null>(null);
+  useEffect(() => {
+    supabase.rpc("has_any_admin").then(({ data }) => setHasAdmin(!!data));
+  }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -59,47 +63,66 @@ export function AdminLogin({ authenticatedNotAdmin }: { authenticatedNotAdmin: b
           </div>
         )}
 
-        <Tabs value={tab} onValueChange={setTab} className="mt-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Entrar</TabsTrigger>
-            <TabsTrigger value="signup">Criar conta</TabsTrigger>
-          </TabsList>
+        {hasAdmin === false ? (
+          <Tabs value={tab} onValueChange={setTab} className="mt-6">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="login">Entrar</TabsTrigger>
+              <TabsTrigger value="signup">Criar conta</TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="login">
-            <form onSubmit={signIn} className="mt-4 space-y-3">
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-              </div>
-              <div>
-                <Label htmlFor="password">Palavra-passe</Label>
-                <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-              </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Entrar
-              </Button>
-            </form>
-          </TabsContent>
+            <TabsContent value="login">
+              <form onSubmit={signIn} className="mt-4 space-y-3">
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                </div>
+                <div>
+                  <Label htmlFor="password">Palavra-passe</Label>
+                  <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+                </div>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Entrar
+                </Button>
+              </form>
+            </TabsContent>
 
-          <TabsContent value="signup">
-            <p className="mt-4 rounded-md bg-muted/60 p-3 text-xs text-muted-foreground">
-              O primeiro utilizador registado torna-se administrador automaticamente.
+            <TabsContent value="signup">
+              <p className="mt-4 rounded-md bg-muted/60 p-3 text-xs text-muted-foreground">
+                Ainda não existe nenhum administrador. O primeiro utilizador registado será automaticamente admin.
+              </p>
+              <form onSubmit={signUp} className="mt-3 space-y-3">
+                <div>
+                  <Label htmlFor="email2">Email</Label>
+                  <Input id="email2" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                </div>
+                <div>
+                  <Label htmlFor="password2">Palavra-passe</Label>
+                  <Input id="password2" type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
+                </div>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Criar conta
+                </Button>
+              </form>
+            </TabsContent>
+          </Tabs>
+        ) : (
+          <form onSubmit={signIn} className="mt-6 space-y-3">
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            </div>
+            <div>
+              <Label htmlFor="password">Palavra-passe</Label>
+              <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+            </div>
+            <Button type="submit" className="w-full" disabled={loading || hasAdmin === null}>
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Entrar
+            </Button>
+            <p className="rounded-md bg-muted/60 p-3 text-xs text-muted-foreground">
+              O registo público está desativado. Peça a um administrador existente para lhe conceder acesso.
             </p>
-            <form onSubmit={signUp} className="mt-3 space-y-3">
-              <div>
-                <Label htmlFor="email2">Email</Label>
-                <Input id="email2" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-              </div>
-              <div>
-                <Label htmlFor="password2">Palavra-passe</Label>
-                <Input id="password2" type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
-              </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Criar conta
-              </Button>
-            </form>
-          </TabsContent>
-        </Tabs>
+          </form>
+        )}
       </div>
     </div>
   );
