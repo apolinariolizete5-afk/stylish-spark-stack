@@ -1,7 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { BarChart3, Eye, PlusCircle, Trash2 } from "lucide-react";
+import { BarChart3, Eye, PlusCircle, ShieldCheck, Trash2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
+import { useState } from "react";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
