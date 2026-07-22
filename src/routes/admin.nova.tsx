@@ -23,7 +23,7 @@ export const Route = createFileRoute("/admin/nova")({
   component: NovaVagaPage,
 });
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+
 
 function NovaVagaPage() {
   const navigate = useNavigate();
@@ -66,7 +66,12 @@ function NovaVagaPage() {
       contentType: file.type,
     });
     if (error) throw error;
-    return `${SUPABASE_URL}/storage/v1/object/public/vaga-imagens/${path}`;
+    // Bucket privado — usar URL assinada de longa duração (10 anos).
+    const { data, error: signErr } = await supabase.storage
+      .from("vaga-imagens")
+      .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+    if (signErr || !data) throw signErr ?? new Error("Falha a gerar URL");
+    return data.signedUrl;
   }
 
   async function submit(e: React.FormEvent) {
