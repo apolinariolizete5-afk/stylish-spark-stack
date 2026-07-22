@@ -23,7 +23,7 @@ export const Route = createFileRoute("/admin/nova")({
   component: NovaVagaPage,
 });
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+
 
 function NovaVagaPage() {
   const navigate = useNavigate();
