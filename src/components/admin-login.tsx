@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Briefcase, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "@tanstack/react-router";
@@ -11,7 +11,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { CONTACTOS } from "@/lib/constants";
 
 export function AdminLogin({ authenticatedNotAdmin }: { authenticatedNotAdmin: boolean }) {
-  const [tab, setTab] = useState(authenticatedNotAdmin ? "login" : "login");
+  const [tab, setTab] = useState("login");
+  const [hasAdmin, setHasAdmin] = useState<boolean | null>(null);
+  useEffect(() => {
+    supabase.rpc("has_any_admin").then(({ data }) => setHasAdmin(!!data));
+  }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
