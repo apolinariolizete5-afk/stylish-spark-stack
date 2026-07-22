@@ -164,7 +164,144 @@ function AdminDashboard() {
           </table>
         </div>
       </section>
+
+      <AdminsSection />
     </div>
+  );
+}
+
+function AdminsSection() {
+  const qc = useQueryClient();
+  const [email, setEmail] = useState("");
+
+  const admins = useQuery({
+    queryKey: ["admins"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("list_admins");
+      if (error) throw error;
+      return (data ?? []) as { user_id: string; email: string; created_at: string }[];
+    },
+  });
+
+  const grant = useMutation({
+    mutationFn: async (targetEmail: string) => {
+      const { error } = await supabase.rpc("grant_admin_by_email", { _email: targetEmail });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Admin concedido");
+      setEmail("");
+      qc.invalidateQueries({ queryKey: ["admins"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const revoke = useMutation({
+    mutationFn: async (userId: string) => {
+      const { error } = await supabase.rpc("revoke_admin", { _user_id: userId });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Admin removido");
+      qc.invalidateQueries({ queryKey: ["admins"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  return (
+    <section>
+      <h2 className="font-display text-lg font-bold">Administradores</h2>
+      <p className="mb-4 text-sm text-muted-foreground">
+        Só administradores podem conceder acesso. A pessoa precisa de já ter conta criada em /admin.
+      </p>
+
+      <Card className="mb-4">
+        <CardContent className="p-5">
+          <form
+            className="flex flex-col gap-3 sm:flex-row sm:items-end"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (email.trim()) grant.mutate(email.trim());
+            }}
+          >
+            <div className="flex-1">
+              <Label htmlFor="admin-email">Conceder admin por email</Label>
+              <Input
+                id="admin-email"
+                type="email"
+                placeholder="pessoa@exemplo.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <Button type="submit" disabled={grant.isPending}>
+              <UserPlus className="mr-2 h-4 w-4" /> Conceder
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <table className="w-full text-sm">
+          <thead className="bg-muted/50 text-left text-xs uppercase text-muted-foreground">
+            <tr>
+              <th className="p-3">Email</th>
+              <th className="p-3">Desde</th>
+              <th className="p-3" />
+            </tr>
+          </thead>
+          <tbody>
+            {admins.isLoading ? (
+              <tr><td colSpan={3} className="p-6 text-center text-muted-foreground">A carregar...</td></tr>
+            ) : (admins.data ?? []).length === 0 ? (
+              <tr><td colSpan={3} className="p-6 text-center text-muted-foreground">Sem administradores.</td></tr>
+            ) : (
+              (admins.data ?? []).map((a) => (
+                <tr key={a.user_id} className="border-t border-border">
+                  <td className="p-3 font-medium flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4 text-primary" />
+                    {a.email}
+                  </td>
+                  <td className="p-3 text-muted-foreground">{formatRelative(a.created_at)}</td>
+                  <td className="p-3 text-right">
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          disabled={(admins.data ?? []).length <= 1}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Remover este admin?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            {a.email} deixará de ter acesso ao painel.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => revoke.mutate(a.user_id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Remover
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </section>
   );
 }
 
