@@ -39,6 +39,7 @@ function NovaVagaPage() {
     descricao: "",
     requisitos: "",
     como_candidatar: "",
+    email_candidatura: "",
     imagem_url: "",
   });
   const [file, setFile] = useState<File | null>(null);
@@ -93,6 +94,7 @@ function NovaVagaPage() {
         descricao: form.descricao,
         requisitos: form.requisitos || null,
         como_candidatar: form.como_candidatar || null,
+        email_candidatura: form.email_candidatura.trim() || null,
         imagem_url: imagem_url || null,
         publicada: true,
       });
@@ -161,6 +163,17 @@ function NovaVagaPage() {
         </Field>
         <Field label="Como candidatar-se">
           <Textarea rows={3} value={form.como_candidatar} onChange={(e) => update("como_candidatar", e.target.value)} placeholder="Ex: enviar CV para..." />
+        </Field>
+        <Field label="Email para receber candidaturas">
+          <Input
+            type="email"
+            value={form.email_candidatura}
+            onChange={(e) => update("email_candidatura", e.target.value)}
+            placeholder="recrutamento@empresa.com"
+          />
+          <p className="mt-1 text-xs text-muted-foreground">
+            Se preenchido, os candidatos verão um botão "Enviar candidatura" com formulário e envio directo por email.
+          </p>
         </Field>
 
         <div>
