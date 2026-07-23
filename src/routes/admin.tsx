@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { Briefcase, LayoutDashboard, LogOut, PlusCircle } from "lucide-react";
+import { Briefcase, ExternalLink, LayoutDashboard, LogOut, PlusCircle } from "lucide-react";
 
 import { useAdmin } from "@/hooks/use-admin";
 import { supabase } from "@/integrations/supabase/client";
@@ -69,7 +69,13 @@ function AdminLayout() {
             );
           })}
         </nav>
-        <div className="border-t border-border p-3">
+        <div className="border-t border-border p-3 space-y-2">
+          <Link
+            to="/"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent"
+          >
+            <ExternalLink className="h-4 w-4" /> Ver site
+          </Link>
           <p className="mb-2 truncate px-2 text-xs text-muted-foreground">{email}</p>
           <Button variant="outline" size="sm" className="w-full" onClick={signOut}>
             <LogOut className="mr-2 h-4 w-4" /> Sair
@@ -80,9 +86,14 @@ function AdminLayout() {
       <div className="flex flex-1 flex-col">
         <header className="flex items-center justify-between border-b border-border bg-card px-4 py-3 md:hidden">
           <Link to="/admin" className="font-display font-bold">Admin</Link>
-          <Button variant="outline" size="sm" onClick={signOut}>
-            <LogOut className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline" size="sm">
+              <Link to="/"><ExternalLink className="h-4 w-4" /></Link>
+            </Button>
+            <Button variant="outline" size="sm" onClick={signOut}>
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
         </header>
         <div className="mx-auto w-full max-w-6xl flex-1 p-4 md:p-8">
           <Outlet />
