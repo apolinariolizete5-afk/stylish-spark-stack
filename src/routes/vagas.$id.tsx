@@ -159,11 +159,6 @@ function VagaPage() {
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              {vaga.email_candidatura && (
-                <Button onClick={() => setCandOpen(true)}>
-                  <Send className="mr-2 h-4 w-4" /> Enviar candidatura
-                </Button>
-              )}
               <Button onClick={partilhar} variant="outline">
                 <Share2 className="mr-2 h-4 w-4" /> Partilhar
               </Button>
@@ -185,6 +180,18 @@ function VagaPage() {
               <Section title="Como candidatar-se">
                 <p className="whitespace-pre-wrap leading-relaxed">{vaga.como_candidatar}</p>
               </Section>
+            )}
+
+            {vaga.email_candidatura && (
+              <div className="mt-10 flex justify-center">
+                <Button
+                  onClick={() => setCandOpen(true)}
+                  size="lg"
+                  className="h-auto w-full max-w-xl px-10 py-6 text-lg font-bold uppercase tracking-wide sm:text-xl"
+                >
+                  <Send className="mr-3 h-6 w-6" /> Enviar candidatura
+                </Button>
+              </div>
             )}
           </div>
         </article>

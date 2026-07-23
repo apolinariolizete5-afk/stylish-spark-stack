@@ -57,7 +57,7 @@ export async function getVaga(id: string): Promise<Vaga | null> {
   return (data as Vaga) ?? null;
 }
 
-export async function getSugeridas(vaga: Vaga, limit = 3): Promise<Vaga[]> {
+export async function getSugeridas(vaga: Vaga, limit = 6): Promise<Vaga[]> {
   const { data } = await supabase
     .from("vagas")
     .select(SELECT_COLS)

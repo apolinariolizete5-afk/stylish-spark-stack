@@ -1,0 +1,1 @@
+CREATE POLICY "Qualquer um pode gerar link da candidatura" ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id = 'candidaturas');

@@ -18,7 +18,7 @@ import {
 import { PROVINCIAS } from "@/lib/constants";
 import { listVagas } from "@/lib/vagas";
 
-const PAGE_SIZE = 9;
+const PAGE_SIZE = 15;
 
 export const Route = createFileRoute("/")({
   component: HomePage,
