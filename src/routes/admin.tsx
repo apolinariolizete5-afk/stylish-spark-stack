@@ -86,9 +86,14 @@ function AdminLayout() {
       <div className="flex flex-1 flex-col">
         <header className="flex items-center justify-between border-b border-border bg-card px-4 py-3 md:hidden">
           <Link to="/admin" className="font-display font-bold">Admin</Link>
-          <Button variant="outline" size="sm" onClick={signOut}>
-            <LogOut className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline" size="sm">
+              <Link to="/"><ExternalLink className="h-4 w-4" /></Link>
+            </Button>
+            <Button variant="outline" size="sm" onClick={signOut}>
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
         </header>
         <div className="mx-auto w-full max-w-6xl flex-1 p-4 md:p-8">
           <Outlet />
