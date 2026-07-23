@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { Briefcase, LayoutDashboard, LogOut, PlusCircle } from "lucide-react";
+import { Briefcase, ExternalLink, LayoutDashboard, LogOut, PlusCircle } from "lucide-react";
 
 import { useAdmin } from "@/hooks/use-admin";
 import { supabase } from "@/integrations/supabase/client";
