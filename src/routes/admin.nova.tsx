@@ -99,11 +99,16 @@ function NovaVagaPage() {
         publicada: true,
       });
       if (error) throw error;
-      toast.success("Vaga publicada com sucesso.");
+      toast.success("Vaga publicada com sucesso.", {
+        action: {
+          label: "Ver na página inicial",
+          onClick: () => navigate({ to: "/" }),
+        },
+      });
       qc.invalidateQueries({ queryKey: ["admin-vagas"] });
       qc.invalidateQueries({ queryKey: ["admin-stats"] });
       qc.invalidateQueries({ queryKey: ["vagas"] });
-      navigate({ to: "/admin" });
+      navigate({ to: "/" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao publicar");
     } finally {
