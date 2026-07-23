@@ -69,7 +69,13 @@ function AdminLayout() {
             );
           })}
         </nav>
-        <div className="border-t border-border p-3">
+        <div className="border-t border-border p-3 space-y-2">
+          <Link
+            to="/"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent"
+          >
+            <ExternalLink className="h-4 w-4" /> Ver site
+          </Link>
           <p className="mb-2 truncate px-2 text-xs text-muted-foreground">{email}</p>
           <Button variant="outline" size="sm" className="w-full" onClick={signOut}>
             <LogOut className="mr-2 h-4 w-4" /> Sair
