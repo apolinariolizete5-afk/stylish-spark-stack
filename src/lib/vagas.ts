@@ -12,6 +12,7 @@ export type Vaga = {
   prazo: string | null;
   como_candidatar: string | null;
   imagem_url: string | null;
+  email_candidatura: string | null;
   visualizacoes: number;
   publicada: boolean;
   created_at: string;
@@ -19,7 +20,7 @@ export type Vaga = {
 };
 
 const SELECT_COLS =
-  "id, titulo, empresa, provincia, descricao, requisitos, tipo_contrato, salario, prazo, como_candidatar, imagem_url, visualizacoes, publicada, created_at, updated_at";
+  "id, titulo, empresa, provincia, descricao, requisitos, tipo_contrato, salario, prazo, como_candidatar, imagem_url, email_candidatura, visualizacoes, publicada, created_at, updated_at";
 
 export async function listVagas(params: {
   search?: string;

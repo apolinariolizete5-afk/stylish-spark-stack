@@ -1,12 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Building2,
   Calendar,
   ChevronLeft,
   Eye,
   MapPin,
+  Send,
   Share2,
   Wallet,
   Briefcase,
@@ -16,6 +17,7 @@ import { toast } from "sonner";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { VagaCard } from "@/components/vaga-card";
+import { CandidaturaDialog } from "@/components/candidatura-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -29,6 +31,7 @@ export const Route = createFileRoute("/vagas/$id")({
 function VagaPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
+  const [candOpen, setCandOpen] = useState(false);
 
   const { data: vaga, isLoading, error } = useQuery({
     queryKey: ["vaga", id],
@@ -156,6 +159,11 @@ function VagaPage() {
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3">
+              {vaga.email_candidatura && (
+                <Button onClick={() => setCandOpen(true)}>
+                  <Send className="mr-2 h-4 w-4" /> Enviar candidatura
+                </Button>
+              )}
               <Button onClick={partilhar} variant="outline">
                 <Share2 className="mr-2 h-4 w-4" /> Partilhar
               </Button>
@@ -194,6 +202,10 @@ function VagaPage() {
           </section>
         )}
       </main>
+
+      {vaga.email_candidatura && (
+        <CandidaturaDialog vaga={vaga} open={candOpen} onOpenChange={setCandOpen} />
+      )}
 
       <SiteFooter />
     </div>
