@@ -51,7 +51,7 @@ async function fetchStats() {
 async function fetchAllVagas(): Promise<Vaga[]> {
   const { data } = await supabase
     .from("vagas")
-    .select("id, titulo, empresa, provincia, descricao, requisitos, tipo_contrato, salario, prazo, como_candidatar, imagem_url, visualizacoes, publicada, created_at, updated_at")
+    .select("id, titulo, empresa, provincia, descricao, requisitos, tipo_contrato, salario, prazo, como_candidatar, imagem_url, email_candidatura, visualizacoes, publicada, created_at, updated_at")
     .order("created_at", { ascending: false });
   return (data ?? []) as Vaga[];
 }
