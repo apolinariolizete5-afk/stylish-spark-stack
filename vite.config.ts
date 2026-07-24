@@ -7,6 +7,11 @@ export default defineConfig({
     server: { entry: "server" },
   },
   server: {
-    allowedHosts: ["mozaempregos.onrender.com"],
+    host: true,
+    allowedHosts: [".onrender.com", "mozaempregos.onrender.com"],
+  },
+  preview: {
+    host: true,
+    allowedHosts: [".onrender.com", "mozaempregos.onrender.com"],
   },
 });
