@@ -5,6 +5,8 @@ import { Search, MapPin, Loader2 } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { SocialLinks } from "@/components/social-links";
+import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { VagaCard } from "@/components/vaga-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -149,7 +151,9 @@ function HomePage() {
         )}
       </main>
 
+      <SocialLinks />
       <SiteFooter />
+      <WhatsAppFloat />
     </div>
   );
 }

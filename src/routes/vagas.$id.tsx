@@ -16,6 +16,8 @@ import { toast } from "sonner";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { SocialLinks } from "@/components/social-links";
+import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { VagaCard } from "@/components/vaga-card";
 import { CandidaturaDialog } from "@/components/candidatura-dialog";
 import { Badge } from "@/components/ui/badge";
@@ -214,7 +216,9 @@ function VagaPage() {
         <CandidaturaDialog vaga={vaga} open={candOpen} onOpenChange={setCandOpen} />
       )}
 
+      <SocialLinks />
       <SiteFooter />
+      <WhatsAppFloat />
     </div>
   );
 }

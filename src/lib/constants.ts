@@ -24,9 +24,10 @@ export const TIPOS_CONTRATO = [
 ] as const;
 
 export const CONTACTOS = {
-  email: "contacto@vagas.co.mz",
-  whatsapp: "+258 84 000 0000",
-  whatsappLink: "https://wa.me/258840000000",
-  facebook: "https://facebook.com/",
+  email: "apolinariolizete5@gmail.com",
+  whatsapp: "+258 87 963 0469",
+  whatsappLink: "https://wa.me/258879630469",
+  whatsappCanal: "https://whatsapp.com/channel/0029VbDLGxu4SpkOM6UG7S3p",
+  facebook: "https://www.facebook.com/profile.php?id=61591198577276",
   siteName: "Portal de Vagas",
 };
