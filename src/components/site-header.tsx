@@ -37,9 +37,6 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <Button asChild size="sm" className="ml-2">
-            <Link to="/admin">Área do admin</Link>
-          </Button>
         </nav>
 
         <Sheet open={open} onOpenChange={setOpen}>
@@ -60,13 +57,6 @@ export function SiteHeader() {
                   {item.label}
                 </Link>
               ))}
-              <Link
-                to="/admin"
-                onClick={() => setOpen(false)}
-                className="mt-2 rounded-md bg-primary px-3 py-2 text-center text-sm font-medium text-primary-foreground"
-              >
-                Área do admin
-              </Link>
             </div>
           </SheetContent>
         </Sheet>
