@@ -99,7 +99,7 @@ export async function getSugeridas(
     .or(`provincia.eq.${vaga.provincia},empresa.eq.${vaga.empresa}`)
     .order("created_at", { ascending: false })
     .limit(limit);
-  return (data ?? []) as Vaga[];
+  return (data ?? []) as unknown as Vaga[];
 }
 
 export async function registarVisualizacao(id: string) {
