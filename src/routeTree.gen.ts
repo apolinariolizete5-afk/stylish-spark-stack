@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as EnviarVagaRouteImport } from './routes/enviar-vaga'
 import { Route as DmcaRouteImport } from './routes/dmca'
@@ -20,6 +21,11 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as VagasIdRouteImport } from './routes/vagas.$id'
 import { Route as AdminNovaRouteImport } from './routes/admin.nova'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacidadeRoute = PrivacidadeRouteImport.update({
   id: '/privacidade',
   path: '/privacidade',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/dmca': typeof DmcaRoute
   '/enviar-vaga': typeof EnviarVagaRoute
   '/privacidade': typeof PrivacidadeRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin/nova': typeof AdminNovaRoute
   '/vagas/$id': typeof VagasIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/dmca': typeof DmcaRoute
   '/enviar-vaga': typeof EnviarVagaRoute
   '/privacidade': typeof PrivacidadeRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin/nova': typeof AdminNovaRoute
   '/vagas/$id': typeof VagasIdRoute
   '/admin': typeof AdminIndexRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/dmca': typeof DmcaRoute
   '/enviar-vaga': typeof EnviarVagaRoute
   '/privacidade': typeof PrivacidadeRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin/nova': typeof AdminNovaRoute
   '/vagas/$id': typeof VagasIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/dmca'
     | '/enviar-vaga'
     | '/privacidade'
+    | '/reset-password'
     | '/admin/nova'
     | '/vagas/$id'
     | '/admin/'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/dmca'
     | '/enviar-vaga'
     | '/privacidade'
+    | '/reset-password'
     | '/admin/nova'
     | '/vagas/$id'
     | '/admin'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/dmca'
     | '/enviar-vaga'
     | '/privacidade'
+    | '/reset-password'
     | '/admin/nova'
     | '/vagas/$id'
     | '/admin/'
@@ -153,11 +165,19 @@ export interface RootRouteChildren {
   DmcaRoute: typeof DmcaRoute
   EnviarVagaRoute: typeof EnviarVagaRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   VagasIdRoute: typeof VagasIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacidade': {
       id: '/privacidade'
       path: '/privacidade'
@@ -251,6 +271,7 @@ const rootRouteChildren: RootRouteChildren = {
   DmcaRoute: DmcaRoute,
   EnviarVagaRoute: EnviarVagaRoute,
   PrivacidadeRoute: PrivacidadeRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   VagasIdRoute: VagasIdRoute,
 }
 export const routeTree = rootRouteImport
