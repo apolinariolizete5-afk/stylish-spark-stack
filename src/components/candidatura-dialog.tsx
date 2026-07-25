@@ -122,14 +122,9 @@ export function CandidaturaDialog({ vaga, open, onOpenChange }: Props) {
       const su = encodeURIComponent(subject);
       const bo = encodeURIComponent(body);
 
-      // Abrir Gmail em nova aba (funciona também com apps de email nativos como fallback via mailto).
-      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${su}&body=${bo}`;
+      // Abrir directamente a app de email do dispositivo (mailto).
       const mailtoUrl = `mailto:${to}?subject=${su}&body=${bo}`;
-
-      const win = window.open(gmailUrl, "_blank", "noopener,noreferrer");
-      if (!win) {
-        window.location.href = mailtoUrl;
-      }
+      window.location.href = mailtoUrl;
 
       toast.success("Abrimos o seu email. Reveja e clique enviar.");
       onOpenChange(false);
@@ -149,7 +144,7 @@ export function CandidaturaDialog({ vaga, open, onOpenChange }: Props) {
         <DialogHeader>
           <DialogTitle>Enviar candidatura</DialogTitle>
           <DialogDescription>
-            Preencha os dados e anexe os documentos. Vamos abrir o seu email (Gmail) com tudo pronto para enviar para <span className="font-medium text-foreground">{vaga.email_candidatura}</span>.
+            Preencha os dados e anexe os documentos. Vamos abrir a app de email do seu dispositivo com tudo pronto para enviar para <span className="font-medium text-foreground">{vaga.email_candidatura}</span>.
           </DialogDescription>
         </DialogHeader>
 
