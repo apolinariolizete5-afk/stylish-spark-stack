@@ -23,29 +23,26 @@ import { CandidaturaDialog } from "@/components/candidatura-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { getSugeridas, getVagaBySlugOrId, registarVisualizacao } from "@/lib/vagas";
+import { registarVisualizacao } from "@/lib/vagas";
+import { sugeridasQuery, vagaQuery } from "@/lib/vagas-queries";
 import { formatDate, formatRelative } from "@/lib/format";
 
 export function VagaDetalhe({ chave }: { chave: string }) {
   const navigate = useNavigate();
   const [candOpen, setCandOpen] = useState(false);
 
-  const { data: vaga, isLoading, error } = useQuery({
-    queryKey: ["vaga", chave],
-    queryFn: () => getVagaBySlugOrId(chave),
-  });
+  const { data: vaga, isLoading, error } = useQuery(vagaQuery(chave));
 
-  const { data: sugeridas } = useQuery({
-    queryKey: ["vaga-sugeridas", vaga?.id, vaga?.provincia, vaga?.empresa],
-    queryFn: () => (vaga ? getSugeridas(vaga) : Promise.resolve([])),
-    enabled: !!vaga,
-  });
+  const { data: sugeridas } = useQuery(sugeridasQuery(vaga));
 
   useEffect(() => {
-    if (vaga?.id) {
+    if (!vaga?.id) return;
+    document.title = `${vaga.titulo} — ${vaga.empresa}`;
+    // não bloqueia o render: regista a visualização depois de pintar a página
+    const t = setTimeout(() => {
       registarVisualizacao(vaga.id).catch(() => {});
-      document.title = `${vaga.titulo} — ${vaga.empresa}`;
-    }
+    }, 800);
+    return () => clearTimeout(t);
   }, [vaga?.id, vaga?.titulo, vaga?.empresa]);
 
   async function partilhar() {

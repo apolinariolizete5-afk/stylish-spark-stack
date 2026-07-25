@@ -23,6 +23,10 @@ export type Vaga = {
 const SELECT_COLS =
   "id, slug, titulo, empresa, provincia, descricao, requisitos, tipo_contrato, salario, prazo, como_candidatar, imagem_url, email_candidatura, visualizacoes, publicada, created_at, updated_at";
 
+/** Colunas mínimas necessárias para os cartões de vaga (listagem/sugeridas). */
+const CARD_COLS =
+  "id, slug, titulo, empresa, provincia, tipo_contrato, imagem_url, visualizacoes, created_at";
+
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /** Link público da vaga: /titulo-da-vaga.html (com fallback para /vagas/<id>). */
@@ -38,7 +42,7 @@ export async function listVagas(params: {
 }): Promise<{ rows: Vaga[]; count: number }> {
   let q = supabase
     .from("vagas")
-    .select(SELECT_COLS, { count: "exact" })
+    .select(CARD_COLS, { count: "exact" })
     .eq("publicada", true)
     .order("created_at", { ascending: false })
     .range(params.offset, params.offset + params.limit - 1);
@@ -52,7 +56,7 @@ export async function listVagas(params: {
   }
   const { data, error, count } = await q;
   if (error) throw error;
-  return { rows: (data ?? []) as Vaga[], count: count ?? 0 };
+  return { rows: (data ?? []) as unknown as Vaga[], count: count ?? 0 };
 }
 
 export async function getVaga(id: string): Promise<Vaga | null> {
@@ -83,16 +87,19 @@ export async function getVagaBySlugOrId(key: string): Promise<Vaga | null> {
   return getVagaBySlug(clean);
 }
 
-export async function getSugeridas(vaga: Vaga, limit = 6): Promise<Vaga[]> {
+export async function getSugeridas(
+  vaga: Pick<Vaga, "id" | "provincia" | "empresa">,
+  limit = 6,
+): Promise<Vaga[]> {
   const { data } = await supabase
     .from("vagas")
-    .select(SELECT_COLS)
+    .select(CARD_COLS)
     .eq("publicada", true)
     .neq("id", vaga.id)
     .or(`provincia.eq.${vaga.provincia},empresa.eq.${vaga.empresa}`)
     .order("created_at", { ascending: false })
     .limit(limit);
-  return (data ?? []) as Vaga[];
+  return (data ?? []) as unknown as Vaga[];
 }
 
 export async function registarVisualizacao(id: string) {
