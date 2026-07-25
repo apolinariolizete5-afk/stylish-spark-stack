@@ -5,10 +5,13 @@ import type { Vaga } from "@/lib/vagas";
 import { formatRelative } from "@/lib/format";
 
 export function VagaCard({ vaga }: { vaga: Vaga }) {
+  const linkProps = vaga.slug
+    ? ({ to: "/$slug", params: { slug: `${vaga.slug}.html` } } as const)
+    : ({ to: "/vagas/$id", params: { id: vaga.id } } as const);
+
   return (
     <Link
-      to="/vagas/$id"
-      params={{ id: vaga.id }}
+      {...linkProps}
       className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
     >
       {vaga.imagem_url ? (
@@ -17,6 +20,7 @@ export function VagaCard({ vaga }: { vaga: Vaga }) {
             src={vaga.imagem_url}
             alt={vaga.titulo}
             loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
           />
         </div>

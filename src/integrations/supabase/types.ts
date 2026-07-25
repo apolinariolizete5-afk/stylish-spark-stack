@@ -38,17 +38,20 @@ export type Database = {
       vaga_visualizacoes: {
         Row: {
           id: number
-          vaga_id: string
+          vaga_id: string | null
+          vaga_titulo: string | null
           viewed_at: string
         }
         Insert: {
           id?: number
-          vaga_id: string
+          vaga_id?: string | null
+          vaga_titulo?: string | null
           viewed_at?: string
         }
         Update: {
           id?: number
-          vaga_id?: string
+          vaga_id?: string | null
+          vaga_titulo?: string | null
           viewed_at?: string
         }
         Relationships: [
@@ -76,6 +79,7 @@ export type Database = {
           publicada: boolean
           requisitos: string | null
           salario: string | null
+          slug: string | null
           tipo_contrato: string | null
           titulo: string
           updated_at: string
@@ -95,6 +99,7 @@ export type Database = {
           publicada?: boolean
           requisitos?: string | null
           salario?: string | null
+          slug?: string | null
           tipo_contrato?: string | null
           titulo: string
           updated_at?: string
@@ -114,6 +119,7 @@ export type Database = {
           publicada?: boolean
           requisitos?: string | null
           salario?: string | null
+          slug?: string | null
           tipo_contrato?: string | null
           titulo?: string
           updated_at?: string
@@ -145,6 +151,8 @@ export type Database = {
       }
       registar_visualizacao: { Args: { _vaga_id: string }; Returns: undefined }
       revoke_admin: { Args: { _user_id: string }; Returns: undefined }
+      slugify: { Args: { _txt: string }; Returns: string }
+      unaccent_placeholder: { Args: { _txt: string }; Returns: string }
     }
     Enums: {
       app_role: "admin"

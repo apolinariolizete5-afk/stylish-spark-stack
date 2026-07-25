@@ -19,6 +19,8 @@ export function AdminLogin({ authenticatedNotAdmin }: { authenticatedNotAdmin: b
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [recovering, setRecovering] = useState(false);
+  const [mode, setMode] = useState<"login" | "recuperar">("login");
 
   async function signIn(e: React.FormEvent) {
     e.preventDefault();
@@ -42,6 +44,76 @@ export function AdminLogin({ authenticatedNotAdmin }: { authenticatedNotAdmin: b
     else toast.success("Conta criada. Já pode iniciar sessão.");
   }
 
+  async function recuperar(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) {
+      toast.error("Introduza o email da conta de administrador.");
+      return;
+    }
+    setRecovering(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: window.location.origin + "/reset-password",
+    });
+    setRecovering(false);
+    if (error) toast.error(error.message);
+    else {
+      toast.success("Email de recuperação enviado. Verifique a sua caixa de entrada.");
+      setMode("login");
+    }
+  }
+
+  const loginForm = (
+    <form onSubmit={signIn} className="mt-4 space-y-3">
+      <div>
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+      </div>
+      <div>
+        <Label htmlFor="password">Palavra-passe</Label>
+        <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+      </div>
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Entrar
+      </Button>
+      <button
+        type="button"
+        onClick={() => setMode("recuperar")}
+        className="w-full text-center text-xs text-muted-foreground underline hover:text-foreground"
+      >
+        Esqueci a palavra-passe
+      </button>
+    </form>
+  );
+
+  const recuperarForm = (
+    <form onSubmit={recuperar} className="mt-6 space-y-3">
+      <p className="rounded-md bg-muted/60 p-3 text-xs text-muted-foreground">
+        Introduza o email da conta de administrador. Enviamos uma ligação para definir uma nova palavra-passe.
+      </p>
+      <div>
+        <Label htmlFor="rec-email">Email</Label>
+        <Input
+          id="rec-email"
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={CONTACTOS.email}
+        />
+      </div>
+      <Button type="submit" className="w-full" disabled={recovering}>
+        {recovering && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Enviar email de recuperação
+      </Button>
+      <button
+        type="button"
+        onClick={() => setMode("login")}
+        className="w-full text-center text-xs text-muted-foreground underline hover:text-foreground"
+      >
+        Voltar ao início de sessão
+      </button>
+    </form>
+  );
+
   return (
     <div className="grid min-h-screen place-items-center bg-gradient-to-br from-primary via-primary to-primary/70 p-4">
       <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl">
@@ -54,7 +126,7 @@ export function AdminLogin({ authenticatedNotAdmin }: { authenticatedNotAdmin: b
 
         <h1 className="text-center font-display text-2xl font-bold">Área do Administrador</h1>
         <p className="mt-1 text-center text-sm text-muted-foreground">
-          Inicie sessão para gerir as vagas.
+          {mode === "recuperar" ? "Recuperar acesso à conta." : "Inicie sessão para gerir as vagas."}
         </p>
 
         {authenticatedNotAdmin && (
@@ -63,28 +135,16 @@ export function AdminLogin({ authenticatedNotAdmin }: { authenticatedNotAdmin: b
           </div>
         )}
 
-        {hasAdmin === false ? (
+        {mode === "recuperar" ? (
+          recuperarForm
+        ) : hasAdmin === false ? (
           <Tabs value={tab} onValueChange={setTab} className="mt-6">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="login">Entrar</TabsTrigger>
               <TabsTrigger value="signup">Criar conta</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="login">
-              <form onSubmit={signIn} className="mt-4 space-y-3">
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-                </div>
-                <div>
-                  <Label htmlFor="password">Palavra-passe</Label>
-                  <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Entrar
-                </Button>
-              </form>
-            </TabsContent>
+            <TabsContent value="login">{loginForm}</TabsContent>
 
             <TabsContent value="signup">
               <p className="mt-4 rounded-md bg-muted/60 p-3 text-xs text-muted-foreground">
@@ -106,22 +166,12 @@ export function AdminLogin({ authenticatedNotAdmin }: { authenticatedNotAdmin: b
             </TabsContent>
           </Tabs>
         ) : (
-          <form onSubmit={signIn} className="mt-6 space-y-3">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div>
-              <Label htmlFor="password">Palavra-passe</Label>
-              <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading || hasAdmin === null}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Entrar
-            </Button>
-            <p className="rounded-md bg-muted/60 p-3 text-xs text-muted-foreground">
+          <div className="mt-2">
+            {loginForm}
+            <p className="mt-3 rounded-md bg-muted/60 p-3 text-xs text-muted-foreground">
               O registo público está desativado. Peça a um administrador existente para lhe conceder acesso.
             </p>
-          </form>
+          </div>
         )}
       </div>
     </div>

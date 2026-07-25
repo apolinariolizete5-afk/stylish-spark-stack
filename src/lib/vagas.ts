@@ -2,6 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type Vaga = {
   id: string;
+  slug: string | null;
   titulo: string;
   empresa: string;
   provincia: string;
@@ -20,7 +21,14 @@ export type Vaga = {
 };
 
 const SELECT_COLS =
-  "id, titulo, empresa, provincia, descricao, requisitos, tipo_contrato, salario, prazo, como_candidatar, imagem_url, email_candidatura, visualizacoes, publicada, created_at, updated_at";
+  "id, slug, titulo, empresa, provincia, descricao, requisitos, tipo_contrato, salario, prazo, como_candidatar, imagem_url, email_candidatura, visualizacoes, publicada, created_at, updated_at";
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Link público da vaga: /titulo-da-vaga.html (com fallback para /vagas/<id>). */
+export function vagaHref(vaga: Pick<Vaga, "id" | "slug">) {
+  return vaga.slug ? `/${vaga.slug}.html` : `/vagas/${vaga.id}`;
+}
 
 export async function listVagas(params: {
   search?: string;
@@ -55,6 +63,24 @@ export async function getVaga(id: string): Promise<Vaga | null> {
     .maybeSingle();
   if (error) throw error;
   return (data as Vaga) ?? null;
+}
+
+export async function getVagaBySlug(slug: string): Promise<Vaga | null> {
+  const clean = slug.replace(/\.html?$/i, "");
+  const { data, error } = await supabase
+    .from("vagas")
+    .select(SELECT_COLS)
+    .eq("slug", clean)
+    .maybeSingle();
+  if (error) throw error;
+  return (data as Vaga) ?? null;
+}
+
+/** Aceita o slug (ex: "carpinteiro.html") ou o id da vaga. */
+export async function getVagaBySlugOrId(key: string): Promise<Vaga | null> {
+  const clean = key.replace(/\.html?$/i, "");
+  if (UUID_RE.test(clean)) return getVaga(clean);
+  return getVagaBySlug(clean);
 }
 
 export async function getSugeridas(vaga: Vaga, limit = 6): Promise<Vaga[]> {
