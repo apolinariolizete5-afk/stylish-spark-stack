@@ -23,6 +23,10 @@ export type Vaga = {
 const SELECT_COLS =
   "id, slug, titulo, empresa, provincia, descricao, requisitos, tipo_contrato, salario, prazo, como_candidatar, imagem_url, email_candidatura, visualizacoes, publicada, created_at, updated_at";
 
+/** Colunas mínimas necessárias para os cartões de vaga (listagem/sugeridas). */
+const CARD_COLS =
+  "id, slug, titulo, empresa, provincia, tipo_contrato, imagem_url, visualizacoes, created_at";
+
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /** Link público da vaga: /titulo-da-vaga.html (com fallback para /vagas/<id>). */
