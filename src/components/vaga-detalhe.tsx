@@ -23,7 +23,8 @@ import { CandidaturaDialog } from "@/components/candidatura-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { getSugeridas, getVagaBySlugOrId, registarVisualizacao } from "@/lib/vagas";
+import { registarVisualizacao } from "@/lib/vagas";
+import { sugeridasQuery, vagaQuery } from "@/lib/vagas-queries";
 import { formatDate, formatRelative } from "@/lib/format";
 
 export function VagaDetalhe({ chave }: { chave: string }) {
