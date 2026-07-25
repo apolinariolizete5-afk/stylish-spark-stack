@@ -83,7 +83,10 @@ export async function getVagaBySlugOrId(key: string): Promise<Vaga | null> {
   return getVagaBySlug(clean);
 }
 
-export async function getSugeridas(vaga: Vaga, limit = 6): Promise<Vaga[]> {
+export async function getSugeridas(
+  vaga: Pick<Vaga, "id" | "provincia" | "empresa">,
+  limit = 6,
+): Promise<Vaga[]> {
   const { data } = await supabase
     .from("vagas")
     .select(SELECT_COLS)
