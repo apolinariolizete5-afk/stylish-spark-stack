@@ -89,7 +89,7 @@ export async function getSugeridas(
 ): Promise<Vaga[]> {
   const { data } = await supabase
     .from("vagas")
-    .select(SELECT_COLS)
+    .select(CARD_COLS)
     .eq("publicada", true)
     .neq("id", vaga.id)
     .or(`provincia.eq.${vaga.provincia},empresa.eq.${vaga.empresa}`)
