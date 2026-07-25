@@ -42,7 +42,7 @@ export async function listVagas(params: {
 }): Promise<{ rows: Vaga[]; count: number }> {
   let q = supabase
     .from("vagas")
-    .select(SELECT_COLS, { count: "exact" })
+    .select(CARD_COLS, { count: "exact" })
     .eq("publicada", true)
     .order("created_at", { ascending: false })
     .range(params.offset, params.offset + params.limit - 1);
