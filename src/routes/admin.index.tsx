@@ -99,7 +99,7 @@ function AdminDashboard() {
       <section>
         <h2 className="font-display text-lg font-bold">Vagas publicadas</h2>
         <p className="mb-4 text-sm text-muted-foreground">
-          Gira as vagas atuais. A eliminação é permanente.
+          Gira as vagas atuais. A eliminação é permanente, mas as visualizações registadas continuam a contar nas estatísticas.
         </p>
 
         <div className="overflow-hidden rounded-xl border border-border bg-card">
@@ -142,7 +142,7 @@ function AdminDashboard() {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Eliminar esta vaga?</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Esta ação não pode ser desfeita. A vaga "{v.titulo}" será removida permanentemente.
+                              Esta ação não pode ser desfeita. A vaga "{v.titulo}" será removida permanentemente. As visualizações já registadas mantêm-se nas estatísticas.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
