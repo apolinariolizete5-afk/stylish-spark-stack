@@ -1,10 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { VagaDetalhe } from "@/components/vaga-detalhe";
 import { sugeridasQuery, vagaQuery } from "@/lib/vagas-queries";
 
 export const Route = createFileRoute("/vagas/$id")({
   loader: async ({ context, params }) => {
     const vaga = await context.queryClient.ensureQueryData(vagaQuery(params.id));
+    // Link antigo (com id): reencaminha para o link personalizado /titulo-da-vaga.html
+    if (vaga?.slug) {
+      throw redirect({
+        to: "/$slug",
+        params: { slug: `${vaga.slug}.html` },
+        statusCode: 301,
+        replace: true,
+      });
+    }
     if (vaga) void context.queryClient.prefetchQuery(sugeridasQuery(vaga));
     return null;
   },
