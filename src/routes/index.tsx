@@ -17,12 +17,43 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PROVINCIAS } from "@/lib/constants";
-import { listVagas } from "@/lib/vagas";
+import { PROVINCIAS, SITE_URL } from "@/lib/constants";
+import { vagasListQuery } from "@/lib/vagas-queries";
 
-const PAGE_SIZE = 15;
+const TITLE = "Moza Empregos — Vagas de emprego em Moçambique";
+const DESCRIPTION =
+  "Vagas de emprego actualizadas todos os dias em Moçambique. Procure por cargo, empresa ou província e candidate-se em minutos.";
 
 export const Route = createFileRoute("/")({
+  loader: async ({ context }) => {
+    // dados da primeira página já no servidor: a home aparece preenchida de imediato
+    const data = await context.queryClient.ensureInfiniteQueryData(
+      vagasListQuery({ search: "", provincia: "todas" }),
+    );
+    const capa = data.pages[0]?.rows.find((v) => v.imagem_url && /^https:\/\//i.test(v.imagem_url));
+    return { imagem: capa?.imagem_url ?? null };
+  },
+  head: ({ loaderData }) => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: SITE_URL },
+      { property: "og:site_name", content: "Moza Empregos" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: TITLE },
+      { name: "twitter:description", content: DESCRIPTION },
+      ...(loaderData?.imagem
+        ? [
+            { property: "og:image", content: loaderData.imagem },
+            { name: "twitter:image", content: loaderData.imagem },
+          ]
+        : []),
+    ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/` }],
+  }),
   component: HomePage,
 });
 
@@ -31,16 +62,8 @@ function HomePage() {
   const [search, setSearch] = useState("");
   const [provincia, setProvincia] = useState<string>("todas");
 
-  const query = useInfiniteQuery({
-    queryKey: ["vagas", { search, provincia }],
-    initialPageParam: 0,
-    queryFn: ({ pageParam }) =>
-      listVagas({ search, provincia, offset: pageParam as number, limit: PAGE_SIZE }),
-    getNextPageParam: (last, all) => {
-      const loaded = all.reduce((acc, p) => acc + p.rows.length, 0);
-      return loaded < last.count ? loaded : undefined;
-    },
-  });
+  const query = useInfiniteQuery(vagasListQuery({ search, provincia }));
+
 
   const vagas = useMemo(() => query.data?.pages.flatMap((p) => p.rows) ?? [], [query.data]);
   const total = query.data?.pages[0]?.count ?? 0;

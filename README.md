@@ -55,3 +55,16 @@ Estas são chaves publicáveis (não secretas). Segredos privados são geridos p
 - `src/components/` — componentes React
 - `src/lib/` — utilitários e integrações
 - `supabase/migrations/` — schema da base de dados
+
+## Deploy no Render (rápido)
+
+O ficheiro `render.yaml` já configura o serviço corretamente:
+
+- **Build Command:** `npm install && npm run build`
+- **Start Command:** `npm run start` (serve a versão compilada, na porta `$PORT`)
+
+Importante: **não** usar `npm run dev` no Render. O servidor de desenvolvimento
+compila as páginas a cada pedido, o que causava demoras de vários segundos.
+No plano gratuito do Render o serviço também "adormece" após ~15 min sem
+visitas; o primeiro acesso depois disso demora mais (cold start). Um plano pago
+ou um ping periódico elimina essa espera.

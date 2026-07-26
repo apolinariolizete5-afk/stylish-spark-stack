@@ -37,13 +37,13 @@ export function VagaDetalhe({ chave }: { chave: string }) {
 
   useEffect(() => {
     if (!vaga?.id) return;
-    document.title = `${vaga.titulo} — ${vaga.empresa}`;
     // não bloqueia o render: regista a visualização depois de pintar a página
     const t = setTimeout(() => {
       registarVisualizacao(vaga.id).catch(() => {});
     }, 800);
     return () => clearTimeout(t);
-  }, [vaga?.id, vaga?.titulo, vaga?.empresa]);
+  }, [vaga?.id]);
+
 
   async function partilhar() {
     const url = typeof window !== "undefined" ? window.location.href : "";

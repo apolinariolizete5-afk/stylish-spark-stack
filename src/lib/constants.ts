@@ -29,5 +29,9 @@ export const CONTACTOS = {
   whatsappLink: "https://wa.me/258879630469",
   whatsappCanal: "https://whatsapp.com/channel/0029VbDLGxu4SpkOM6UG7S3p",
   facebook: "https://www.facebook.com/profile.php?id=61591198577276",
-  siteName: "Portal de Vagas",
+  siteName: "Moza Empregos",
 };
+
+/** URL pública do site (usada nos links canónicos e pré-visualizações). */
+export const SITE_URL = "https://mozaempregos.onrender.com";
+
