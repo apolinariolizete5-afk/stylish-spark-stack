@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { BarChart3, Eye, PlusCircle, ShieldCheck, Trash2, UserPlus } from "lucide-react";
+import { BarChart3, Copy, Eye, PlusCircle, ShieldCheck, Trash2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -22,7 +22,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { formatRelative } from "@/lib/format";
-import type { Vaga } from "@/lib/vagas";
+import { SITE_URL } from "@/lib/constants";
+import { vagaHref, type Vaga } from "@/lib/vagas";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
@@ -51,7 +52,7 @@ async function fetchStats() {
 async function fetchAllVagas(): Promise<Vaga[]> {
   const { data } = await supabase
     .from("vagas")
-    .select("id, titulo, empresa, provincia, descricao, requisitos, tipo_contrato, salario, prazo, como_candidatar, imagem_url, email_candidatura, visualizacoes, publicada, created_at, updated_at")
+    .select("id, slug, titulo, empresa, provincia, descricao, requisitos, tipo_contrato, salario, prazo, como_candidatar, imagem_url, email_candidatura, visualizacoes, publicada, created_at, updated_at")
     .order("created_at", { ascending: false });
   return (data ?? []) as Vaga[];
 }
@@ -123,9 +124,30 @@ function AdminDashboard() {
                 (vagas.data ?? []).map((v) => (
                   <tr key={v.id} className="border-t border-border">
                     <td className="p-3">
-                      <Link to="/vagas/$id" params={{ id: v.id }} className="font-medium hover:text-primary">
+                      <a
+                        href={vagaHref(v)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-medium hover:text-primary"
+                      >
                         {v.titulo}
-                      </Link>
+                      </a>
+                      <div className="mt-1 flex items-center gap-2">
+                        <code className="text-xs text-muted-foreground">{`${SITE_URL}${vagaHref(v)}`}</code>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 px-2 text-xs"
+                          onClick={() => {
+                            navigator.clipboard
+                              .writeText(`${SITE_URL}${vagaHref(v)}`)
+                              .then(() => toast.success("Link copiado"))
+                              .catch(() => toast.error("Não foi possível copiar"));
+                          }}
+                        >
+                          <Copy className="mr-1 h-3 w-3" /> Copiar link
+                        </Button>
+                      </div>
                     </td>
                     <td className="p-3 text-muted-foreground">{v.empresa}</td>
                     <td className="p-3 text-muted-foreground">{v.provincia}</td>

@@ -48,6 +48,10 @@ export const Route = createFileRoute("/")({
       ...(loaderData?.imagem
         ? [
             { property: "og:image", content: loaderData.imagem },
+            { property: "og:image:secure_url", content: loaderData.imagem },
+            { property: "og:image:width", content: "1200" },
+            { property: "og:image:height", content: "630" },
+            { property: "og:image:alt", content: "Moza Empregos" },
             { name: "twitter:image", content: loaderData.imagem },
           ]
         : []),
