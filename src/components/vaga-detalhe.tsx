@@ -23,7 +23,8 @@ import { CandidaturaDialog } from "@/components/candidatura-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { registarVisualizacao } from "@/lib/vagas";
+import { registarVisualizacao, vagaHref } from "@/lib/vagas";
+import { SITE_URL } from "@/lib/constants";
 import { sugeridasQuery, vagaQuery } from "@/lib/vagas-queries";
 import { formatDate, formatRelative } from "@/lib/format";
 
@@ -46,7 +47,12 @@ export function VagaDetalhe({ chave }: { chave: string }) {
 
 
   async function partilhar() {
-    const url = typeof window !== "undefined" ? window.location.href : "";
+    // link personalizado da vaga (ex.: https://.../carpinteiro.html)
+    const url = vaga
+      ? `${SITE_URL}${vagaHref(vaga)}`
+      : typeof window !== "undefined"
+        ? window.location.href
+        : "";
     const text = vaga ? `${vaga.titulo} — ${vaga.empresa}` : "";
     if (navigator.share) {
       try {
