@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { BarChart3, Eye, PlusCircle, ShieldCheck, Trash2, UserPlus } from "lucide-react";
+import { BarChart3, Copy, Eye, PlusCircle, ShieldCheck, Trash2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -22,7 +22,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { formatRelative } from "@/lib/format";
-import type { Vaga } from "@/lib/vagas";
+import { SITE_URL } from "@/lib/constants";
+import { vagaHref, type Vaga } from "@/lib/vagas";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
