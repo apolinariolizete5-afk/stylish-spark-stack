@@ -40,7 +40,7 @@ export const Route = createFileRoute("/$slug")({
     const imagem =
       loaderData.imagem_url && /^https:\/\//i.test(loaderData.imagem_url)
         ? loaderData.imagem_url
-        : null;
+        : OG_IMAGE_FALLBACK;
 
     return {
       meta: [
