@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PROVINCIAS, SITE_URL } from "@/lib/constants";
+import { OG_IMAGE_FALLBACK, PROVINCIAS, SITE_URL } from "@/lib/constants";
 import { vagasListQuery } from "@/lib/vagas-queries";
 
 const TITLE = "Moza Empregos — Vagas de emprego em Moçambique";
