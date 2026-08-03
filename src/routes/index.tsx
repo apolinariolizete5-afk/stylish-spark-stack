@@ -26,13 +26,22 @@ const DESCRIPTION =
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
-    // dados da primeira página já no servidor: a home aparece preenchida de imediato
-    const data = await context.queryClient.ensureInfiniteQueryData(
-      vagasListQuery({ search: "", provincia: "todas" }),
-    );
-    const capa = data.pages[0]?.rows.find((v) => v.imagem_url && /^https:\/\//i.test(v.imagem_url));
-    return { imagem: capa?.imagem_url ?? null };
+    // dados da primeira página já no servidor: a home aparece preenchida de imediato.
+    // Se o backend falhar no servidor, não bloqueamos a página — o cliente volta a tentar.
+    try {
+      const data = await context.queryClient.ensureInfiniteQueryData(
+        vagasListQuery({ search: "", provincia: "todas" }),
+      );
+      const capa = data.pages[0]?.rows.find(
+        (v) => v.imagem_url && /^https:\/\//i.test(v.imagem_url),
+      );
+      return { imagem: capa?.imagem_url ?? null };
+    } catch (error) {
+      console.error("Falha ao pré-carregar vagas no servidor:", error);
+      return { imagem: null };
+    }
   },
+
   head: ({ loaderData }) => {
     const imagem = loaderData?.imagem ?? OG_IMAGE_FALLBACK;
     return {

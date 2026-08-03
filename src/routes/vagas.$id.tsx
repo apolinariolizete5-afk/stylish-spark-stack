@@ -1,10 +1,17 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { VagaDetalhe } from "@/components/vaga-detalhe";
 import { sugeridasQuery, vagaQuery } from "@/lib/vagas-queries";
+import type { Vaga } from "@/lib/vagas";
 
 export const Route = createFileRoute("/vagas/$id")({
   loader: async ({ context, params }) => {
-    const vaga = await context.queryClient.ensureQueryData(vagaQuery(params.id));
+    let vaga: Vaga | null = null;
+    try {
+      vaga = await context.queryClient.ensureQueryData(vagaQuery(params.id));
+    } catch (error) {
+      console.error("Falha ao carregar a vaga no servidor:", error);
+      return null;
+    }
     // Link antigo (com id): reencaminha para o link personalizado /titulo-da-vaga.html
     if (vaga?.slug) {
       throw redirect({
@@ -17,6 +24,7 @@ export const Route = createFileRoute("/vagas/$id")({
     if (vaga) void context.queryClient.prefetchQuery(sugeridasQuery(vaga));
     return null;
   },
+
   head: () => ({
     meta: [
       { title: "Detalhes da vaga — Moza Empregos" },
