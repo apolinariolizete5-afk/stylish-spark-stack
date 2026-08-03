@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { VagaDetalhe } from "@/components/vaga-detalhe";
 import { sugeridasQuery, vagaQuery } from "@/lib/vagas-queries";
-import { SITE_URL } from "@/lib/constants";
+import { OG_IMAGE_FALLBACK, SITE_URL } from "@/lib/constants";
 
 function resumo(texto: string | null | undefined, max = 155) {
   const t = (texto ?? "").replace(/\s+/g, " ").trim();
