@@ -1,10 +1,11 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { VagaDetalhe } from "@/components/vaga-detalhe";
 import { sugeridasQuery, vagaQuery } from "@/lib/vagas-queries";
+import type { Vaga } from "@/lib/vagas";
 
 export const Route = createFileRoute("/vagas/$id")({
   loader: async ({ context, params }) => {
-    let vaga: Awaited<ReturnType<typeof vagaQuery>["queryFn"]> | null = null;
+    let vaga: Vaga | null = null;
     try {
       vaga = await context.queryClient.ensureQueryData(vagaQuery(params.id));
     } catch (error) {
