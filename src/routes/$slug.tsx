@@ -10,19 +10,25 @@ function resumo(texto: string | null | undefined, max = 155) {
 
 export const Route = createFileRoute("/$slug")({
   loader: async ({ context, params }) => {
-    const vaga = await context.queryClient.ensureQueryData(vagaQuery(params.slug));
-    if (vaga) void context.queryClient.prefetchQuery(sugeridasQuery(vaga));
-    if (!vaga) return null;
-    // apenas dados serializáveis para o head()
-    return {
-      slug: vaga.slug ?? params.slug.replace(/\.html?$/i, ""),
-      titulo: vaga.titulo,
-      empresa: vaga.empresa,
-      provincia: vaga.provincia,
-      descricao: resumo(vaga.descricao),
-      imagem_url: vaga.imagem_url,
-    };
+    try {
+      const vaga = await context.queryClient.ensureQueryData(vagaQuery(params.slug));
+      if (vaga) void context.queryClient.prefetchQuery(sugeridasQuery(vaga));
+      if (!vaga) return null;
+      // apenas dados serializáveis para o head()
+      return {
+        slug: vaga.slug ?? params.slug.replace(/\.html?$/i, ""),
+        titulo: vaga.titulo,
+        empresa: vaga.empresa,
+        provincia: vaga.provincia,
+        descricao: resumo(vaga.descricao),
+        imagem_url: vaga.imagem_url,
+      };
+    } catch (error) {
+      console.error("Falha ao carregar a vaga no servidor:", error);
+      return null;
+    }
   },
+
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
