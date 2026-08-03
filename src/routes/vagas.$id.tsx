@@ -4,7 +4,7 @@ import { sugeridasQuery, vagaQuery } from "@/lib/vagas-queries";
 
 export const Route = createFileRoute("/vagas/$id")({
   loader: async ({ context, params }) => {
-    let vaga: Awaited<ReturnType<typeof context.queryClient.ensureQueryData>> | null = null;
+    let vaga: Awaited<ReturnType<typeof vagaQuery>["queryFn"]> | null = null;
     try {
       vaga = await context.queryClient.ensureQueryData(vagaQuery(params.id));
     } catch (error) {
