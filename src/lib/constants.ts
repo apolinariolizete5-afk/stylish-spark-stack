@@ -35,3 +35,6 @@ export const CONTACTOS = {
 /** URL pública do site (usada nos links canónicos e pré-visualizações). */
 export const SITE_URL = "https://mozaempregos.onrender.com";
 
+/** Imagem de reserva para pré-visualizações (WhatsApp, Facebook, etc.). */
+export const OG_IMAGE_FALLBACK = `${SITE_URL}/og-moza-empregos.jpg`;
+

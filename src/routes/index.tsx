@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PROVINCIAS, SITE_URL } from "@/lib/constants";
+import { OG_IMAGE_FALLBACK, PROVINCIAS, SITE_URL } from "@/lib/constants";
 import { vagasListQuery } from "@/lib/vagas-queries";
 
 const TITLE = "Moza Empregos — Vagas de emprego em Moçambique";
@@ -33,31 +33,31 @@ export const Route = createFileRoute("/")({
     const capa = data.pages[0]?.rows.find((v) => v.imagem_url && /^https:\/\//i.test(v.imagem_url));
     return { imagem: capa?.imagem_url ?? null };
   },
-  head: ({ loaderData }) => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: SITE_URL },
-      { property: "og:site_name", content: "Moza Empregos" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: TITLE },
-      { name: "twitter:description", content: DESCRIPTION },
-      ...(loaderData?.imagem
-        ? [
-            { property: "og:image", content: loaderData.imagem },
-            { property: "og:image:secure_url", content: loaderData.imagem },
-            { property: "og:image:width", content: "1200" },
-            { property: "og:image:height", content: "630" },
-            { property: "og:image:alt", content: "Moza Empregos" },
-            { name: "twitter:image", content: loaderData.imagem },
-          ]
-        : []),
-    ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/` }],
-  }),
+  head: ({ loaderData }) => {
+    const imagem = loaderData?.imagem ?? OG_IMAGE_FALLBACK;
+    return {
+      meta: [
+        { title: TITLE },
+        { name: "description", content: DESCRIPTION },
+        { property: "og:title", content: TITLE },
+        { property: "og:description", content: DESCRIPTION },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: SITE_URL },
+        { property: "og:site_name", content: "Moza Empregos" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: TITLE },
+        { name: "twitter:description", content: DESCRIPTION },
+        { property: "og:image", content: imagem },
+        { property: "og:image:secure_url", content: imagem },
+        { property: "og:image:type", content: "image/jpeg" },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+        { property: "og:image:alt", content: "Moza Empregos" },
+        { name: "twitter:image", content: imagem },
+      ],
+      links: [{ rel: "canonical", href: `${SITE_URL}/` }],
+    };
+  },
   component: HomePage,
 });
 
