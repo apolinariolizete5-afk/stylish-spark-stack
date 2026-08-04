@@ -202,8 +202,8 @@ export function VagaDetalhe({ chave }: { chave: string }) {
             <h2 className="mb-4 flex items-center gap-2 font-display text-2xl font-bold">
               <Briefcase className="h-5 w-5" /> Vagas sugeridas
             </h2>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {sugeridas.map((v) => (
+            <div className="grid grid-cols-2 gap-4 sm:gap-5">
+              {sugeridas.slice(0, 6).map((v) => (
                 <VagaCard key={v.id} vaga={v} />
               ))}
             </div>
