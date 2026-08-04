@@ -31,7 +31,16 @@ const MIME = {
   ".map": "application/json; charset=utf-8",
 };
 
-const { default: handler } = await import("./dist/server/index.mjs");
+const serverEntry = join(root, "server", "index.mjs");
+if (!existsSync(serverEntry)) {
+  console.error(
+    `Build não encontrado em ${serverEntry}.\n` +
+      `Corra "npm install --include=dev && npm run build" antes de "npm run start".`,
+  );
+  process.exit(1);
+}
+const { default: handler } = await import(serverEntry);
+
 
 function staticFile(pathname) {
   if (pathname.endsWith("/")) return null;
