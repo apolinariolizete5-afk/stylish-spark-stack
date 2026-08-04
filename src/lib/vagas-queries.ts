@@ -1,7 +1,7 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { getSugeridas, getVagaBySlugOrId, listVagas, type Vaga } from "@/lib/vagas";
 
-export const PAGE_SIZE = 15;
+export const PAGE_SIZE = 10;
 
 export const vagaQuery = (chave: string) =>
   queryOptions({

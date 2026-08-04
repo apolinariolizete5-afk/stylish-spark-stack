@@ -99,8 +99,29 @@ export async function getSugeridas(
     .or(`provincia.eq.${vaga.provincia},empresa.eq.${vaga.empresa}`)
     .order("created_at", { ascending: false })
     .limit(limit);
-  return (data ?? []) as unknown as Vaga[];
+
+  const rows = (data ?? []) as unknown as Vaga[];
+  if (rows.length >= limit) return rows;
+
+  // Garante que há sempre vagas sugeridas: completa com as mais recentes.
+  const { data: recentes } = await supabase
+    .from("vagas")
+    .select(CARD_COLS)
+    .eq("publicada", true)
+    .neq("id", vaga.id)
+    .order("created_at", { ascending: false })
+    .limit(limit * 2);
+
+  const vistos = new Set(rows.map((r) => r.id));
+  for (const r of ((recentes ?? []) as unknown as Vaga[])) {
+    if (rows.length >= limit) break;
+    if (vistos.has(r.id)) continue;
+    vistos.add(r.id);
+    rows.push(r);
+  }
+  return rows;
 }
+
 
 export async function registarVisualizacao(id: string) {
   await supabase.rpc("registar_visualizacao", { _vaga_id: id });
