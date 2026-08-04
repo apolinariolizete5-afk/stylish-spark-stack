@@ -3,9 +3,13 @@ services:
     name: mozaempregos
     runtime: node
     plan: free
-    # Compila a versão de produção (rápida) em vez de correr o servidor de desenvolvimento
-    buildCommand: npm install && npm run build
+    # Compila a versão de produção (rápida) em vez de correr o servidor de desenvolvimento.
+    # --include=dev é obrigatório: no Render NODE_ENV=production e sem isto o npm
+    # ignora as devDependencies (vite, nitro) e o build não gera dist/server/index.mjs.
+    buildCommand: npm install --include=dev && npm run build
     startCommand: npm run start
     envVars:
       - key: NODE_VERSION
         value: "22"
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"
