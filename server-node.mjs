@@ -7,9 +7,12 @@ import { createReadStream, existsSync, statSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = fileURLToPath(new URL("./dist/", import.meta.url));
+// O nitro pode gerar o build em ./dist ou em ./.output, dependendo da versão.
+const candidates = ["./dist/", "./.output/"].map((d) => fileURLToPath(new URL(d, import.meta.url)));
+const root = candidates.find((dir) => existsSync(join(dir, "server", "index.mjs"))) ?? candidates[0];
 const clientDir = join(root, "client");
 const port = Number(process.env.PORT ?? 10000);
+
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
