@@ -142,7 +142,7 @@ function HomePage() {
           <div>
             <h2 className="font-display text-2xl font-bold">Vagas disponíveis</h2>
             <p className="text-sm text-muted-foreground">
-              {query.isLoading
+              {query.isLoading && vagas.length === 0 && total === 0
                 ? "A carregar..."
                 : total === 0
                   ? "Sem resultados para os filtros escolhidos."

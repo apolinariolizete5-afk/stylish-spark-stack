@@ -10,7 +10,9 @@ import { fileURLToPath } from "node:url";
 // O nitro pode gerar o build em ./dist ou em ./.output, dependendo da versão.
 const candidates = ["./dist/", "./.output/"].map((d) => fileURLToPath(new URL(d, import.meta.url)));
 const root = candidates.find((dir) => existsSync(join(dir, "server", "index.mjs"))) ?? candidates[0];
-const clientDir = join(root, "client");
+// O nitro coloca os ficheiros do cliente em "client" ou em "public".
+const clientDir =
+  [join(root, "client"), join(root, "public")].find((dir) => existsSync(dir)) ?? join(root, "client");
 const port = Number(process.env.PORT ?? 10000);
 
 
