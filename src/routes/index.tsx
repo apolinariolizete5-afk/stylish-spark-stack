@@ -142,7 +142,7 @@ function HomePage() {
           <div>
             <h2 className="font-display text-2xl font-bold">Vagas disponíveis</h2>
             <p className="text-sm text-muted-foreground">
-              {query.isLoading
+              {query.isLoading && vagas.length === 0 && total === 0
                 ? "A carregar..."
                 : total === 0
                   ? "Sem resultados para os filtros escolhidos."
@@ -151,7 +151,7 @@ function HomePage() {
           </div>
         </div>
 
-        {query.isLoading ? (
+        {query.isLoading && vagas.length === 0 ? (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="h-72 animate-pulse rounded-xl border border-border bg-muted/50" />
