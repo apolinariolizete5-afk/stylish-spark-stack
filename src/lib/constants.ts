@@ -26,7 +26,7 @@ export const TIPOS_CONTRATO = [
 export const CONTACTOS = {
   email: "apolinariolizete5@gmail.com",
   whatsapp: "+258 87 963 0469",
-  whatsappLink: "https://wa.me/258879630469",
+  whatsappLink: "https://whatsapp.com/channel/0029VbDLGxu4SpkOM6UG7S3p",
   whatsappCanal: "https://whatsapp.com/channel/0029VbDLGxu4SpkOM6UG7S3p",
   facebook: "https://www.facebook.com/profile.php?id=61591198577276",
   siteName: "Moza Empregos",
